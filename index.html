@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools Junction - All in One AI Hub</title>
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background: #090d16;
+      color: #e2e8f0;
+      padding-bottom: 60px;
+    }
+    header {
+      background: radial-gradient(circle at top, #1e293b, #090d16);
+      padding: 35px 20px 25px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    header h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    header p {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Search & Filter Controls */
+    .controls {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    #searchInput {
+      width: 100%;
+      max-width: 480px;
+      padding: 12px 18px;
+      border-radius: 25px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    #searchInput:focus {
+      border-color: #38bdf8;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .filter-btn {
+      background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: #0284c7;
+      color: #fff;
+      border-color: #0284c7;
+    }
+
+    /* Grid Layout */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      max-width: 1050px;
+      margin: 10px auto;
+      padding: 0 16px;
+    }
+    .tool-card {
+      background: #131c2e;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .tool-card:hover {
+      transform: translateY(-3px);
+      border-color: #38bdf8;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .tool-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .badge {
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .tool-card h3 {
+      font-size: 1.1rem;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .tool-card p {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    /* Dual Action Buttons */
+    .button-group {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .btn-work {
+      flex: 1;
+      text-align: center;
+      background: #0284c7;
+      color: #fff;
+      text-decoration: none;
+      padding: 9px 4px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-app {
+      flex: 1;
+      text-align: center;
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      text-decoration: none;
+      padding: 9px 4px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .btn-work:hover {
+      background: #0369a1;
+    }
+    .btn-app:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>AI Tools Junction</h1>
+    <p>Work directly in your browser or get official mobile apps.</p>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search AI tools (e.g. video, chat, image)..." onkeyup="filterTools()">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setCategory('All', this)">All</button>
+      <button class="filter-btn" onclick="setCategory('Chat', this)">Chat / Text</button>
+      <button class="filter-btn" onclick="setCategory('Image', this)">Image / Art</button>
+      <button class="filter-btn" onclick="setCategory('Video', this)">Video AI</button>
+      <button class="filter-btn" onclick="setCategory('Voice', this)">Voice / Audio</button>
+      <button class="filter-btn" onclick="setCategory('Productivity', this)">Productivity</button>
+    </div>
+  </div>
+
+  <div class="tools-grid" id="toolsContainer">
+    <!-- Populated by JavaScript -->
+  </div>
+
+  <script>
+    // Tools Database: Add your affiliate links in "webUrl"
+    const aiTools = [
+      {
+        name: "ChatGPT",
+        category: "Chat",
+        desc: "Advanced conversational assistant for writing, problem solving, and analysis.",
+        badge: "Freemium",
+        icon: "🤖",
+        webUrl: "https://chatgpt.com",
+        appUrl: "https://play.google.com/store/apps/details?id=com.openai.chatgpt"
+      },
+      {
+        name: "Canva Magic Studio",
+        category: "Image",
+        desc: "All-in-one design suite with AI image generator, magic eraser, and templates.",
+        badge: "Freemium",
+        icon: "🎨",
+        webUrl: "https://www.canva.com",
+        appUrl: "https://play.google.com/store/apps/details?id=com.canva.editor"
+      },
+      {
+        name: "Leonardo.ai",
+        category: "Image",
+        desc: "High quality art generator, game assets, and portrait creator with free daily tokens.",
+        badge: "Free Daily",
+        icon: "✨",
+        webUrl: "https://leonardo.ai",
+        appUrl: "https://play.google.com/store/apps/details?id=ai.leonardo.android"
+      },
+      {
+        name: "Luma Dream Machine",
+        category: "Video",
+        desc: "Generate realistic, high-quality 3D video scenes from text prompts directly in browser.",
+        badge: "Free Tier",
+        icon: "🎥",
+        webUrl: "https://lumalabs.ai/dream-machine",
+        appUrl: "https://lumalabs.ai"
+      },
+      {
+        name: "ElevenLabs",
+        category: "Voice",
+        desc: "Natural human-like AI voices, text-to-speech, and voice cloning in multiple languages.",
+        badge: "Freemium",
+        icon: "🎙️",
+        webUrl: "https://elevenlabs.io",
+        appUrl: "https://play.google.com/store/apps/details?id=io.elevenlabs.readerapp"
+      },
+      {
+        name: "Runway Gen-2",
+        category: "Video",
+        desc: "Industry-standard AI text-to-video, video expansion, and motion animation tool.",
+        badge: "Freemium",
+        icon: "🎬",
+        webUrl: "https://runwayml.com",
+        appUrl: "https://apps.apple.com/us/app/runwayml/id1665024375"
+      },
+      {
+        name: "Perplexity AI",
+        category: "Productivity",
+        desc: "AI search engine that answers questions with real-time sources and cited web links.",
+        badge: "Freemium",
+        icon: "🔍",
+        webUrl: "https://www.perplexity.ai",
+        appUrl: "https://play.google.com/store/apps/details?id=ai.perplexity.app.android"
+      },
+      {
+        name: "Notion AI",
+        category: "Productivity",
+        desc: "Smart workspace to summarize notes, auto-write documents, and manage project workflows.",
+        badge: "Trial / Paid",
+        icon: "📝",
+        webUrl: "https://www.notion.so",
+        appUrl: "https://play.google.com/store/apps/details?id=notion.id"
+      }
+    ];
+
+    let currentCategory = "All";
+
+    function renderCards(tools) {
+      const container = document.getElementById("toolsContainer");
+      container.innerHTML = "";
+
+      if (tools.length === 0) {
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#64748b; padding:20px;">No matching AI tools found.</p>`;
+        return;
+      }
+
+      tools.forEach(tool => {
+        const card = document.createElement("div");
+        card.className = "tool-card";
+        card.innerHTML = `
+          <div>
+            <div class="card-top">
+              <div class="tool-icon">${tool.icon}</div>
+              <span class="badge">${tool.badge}</span>
+            </div>
+            <h3>${tool.name}</h3>
+            <p>${tool.desc}</p>
+          </div>
+          <div class="button-group">
+            <a href="${tool.webUrl}" target="_blank" rel="noopener sponsored" class="btn-work">
+              Work Online ↗
+            </a>
+            <a href="${tool.appUrl}" target="_blank" rel="noopener" class="btn-app">
+              Get App 📲
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterTools() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = aiTools.filter(item => {
+        const catMatch = currentCategory === "All" || item.category === currentCategory;
+        const textMatch = item.name.toLowerCase().includes(query) ||
+                          item.desc.toLowerCase().includes(query) ||
+                          item.category.toLowerCase().includes(query);
+        return catMatch && textMatch;
+      });
+      renderCards(filtered);
+    }
+
+    function setCategory(cat, btn) {
+      currentCategory = cat;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      filterTools();
+    }
+
+    // Initial render
+    renderCards(aiTools);
+  </script>
+</body>
+</html>
